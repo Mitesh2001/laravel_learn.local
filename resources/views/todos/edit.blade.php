@@ -11,6 +11,7 @@
         @method('patch')
         <div class="mx-2"><input type="text" name="title" value="{{$todo->title}}" class="form-group" placeholder="Title..."></div>
         <div class="mx-2"><textarea name="description">{{$todo->description}}</textarea></div>
+        @livewire('editstep',['steps' => $todo->steps])
         <div class="mx-2"><input type="submit" value="Update" class="btn btn-primary"></div>
     </form>
 @endsection

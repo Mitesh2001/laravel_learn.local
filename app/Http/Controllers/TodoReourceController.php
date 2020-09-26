@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\TodoCreateRequest;
+use App\Models\Step;
 use App\Models\Todo;
 use Illuminate\Http\Request;
 
@@ -15,7 +16,7 @@ class TodoReourceController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth')->except('index');
+        $this->middleware('auth');
     }
 
 
@@ -33,7 +34,6 @@ class TodoReourceController extends Controller
     public function create()
     {
         return view('todos.create');
-        // dd('hello');
     }
 
     /**
@@ -44,7 +44,12 @@ class TodoReourceController extends Controller
      */
     public function store(TodoCreateRequest  $request)
     {
-        auth()->user()->todos()->create($request->all());
+        $todo = auth()->user()->todos()->create($request->all());
+        if ($request->step) {
+            foreach ($request->step as $step) {
+                $todo->steps()->create(['name'=>$step]);
+            }
+        }
         return redirect(route('todo.index'))->with('message', 'To do created successfully !');
     }
 
@@ -80,6 +85,13 @@ class TodoReourceController extends Controller
     public function update(Todo $todo, TodoCreateRequest $request)
     {
         $todo->update(['title' => $request->title,'description' => $request->description]) ;
+        if ($request->stepName) {
+            foreach ($request->stepName as $key => $value) {
+                $id = $request->stepId[$key];
+                Step::find($id)->update(['name'=> $value ]);
+            }
+        }
+
         return redirect(route('todo.index'))->with('message', 'Updated');
     }
 
@@ -91,6 +103,7 @@ class TodoReourceController extends Controller
      */
     public function destroy(Todo $todo)
     {
+        $todo->steps->each->delete();
         $todo->delete();
         return redirect(route('todo.index'))->with('message', '" '.$todo->title.' "'.' deleted !!');
     }

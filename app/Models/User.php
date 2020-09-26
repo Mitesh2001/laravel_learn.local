@@ -22,7 +22,7 @@ class User extends Authenticatable
 
     public function todos()
     {
-        return $this->hasOne(Todo::class);
+        return $this->hasMany(Todo::class);
     }
 
     /**

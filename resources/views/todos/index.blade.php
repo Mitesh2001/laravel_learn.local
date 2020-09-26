@@ -40,6 +40,6 @@
         </div>
     </div>
     @empty
-        <p>No task available, create one</p>
+        <p class="text-danger">No task available, create one</p>
     @endforelse
 @endsection()

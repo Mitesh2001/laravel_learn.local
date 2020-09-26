@@ -2,11 +2,17 @@
 
 namespace App\Http\Livewire;
 
+use App\Models\Step;
 use Livewire\Component;
 
-class Step extends Component
+class Editstep extends Component
 {
     public $steps = [];
+
+    public function mount($steps)
+    {
+        $this->steps = $steps -> toArray() ;
+    }
 
     public function increment()
     {
@@ -15,11 +21,13 @@ class Step extends Component
 
     public function remove($index)
     {
+        $step = $this->steps[$index];
+        Step::find($step['id'])->delete();
         unset($this->steps[$index]);
     }
 
     public function render()
     {
-        return view('livewire.step');
+        return view('livewire.editstep');
     }
 }
